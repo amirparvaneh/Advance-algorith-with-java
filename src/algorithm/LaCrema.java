@@ -10,25 +10,23 @@ public class LaCrema {
         for (int i = 0; i < n; i++) {
             b[i] = sc.nextInt();
         }
-
-        // Calculate cumulative time required to burn matches from the beginning
-        double[] cumTime = new double[n];
-        cumTime[0] = b[0];
-        for (int i = 1; i < n; i++) {
-            cumTime[i] = cumTime[i-1] + b[i];
-        }
-
         int q = sc.nextInt();
+        double[] prefixSum = new double[n];
+        prefixSum[0] = b[0];
+        for (int i = 1; i < n; i++) {
+            prefixSum[i] = prefixSum[i - 1] + b[i];
+        }
         while (q-- > 0) {
             int l = sc.nextInt();
             int r = sc.nextInt();
-            double time = cumTime[r] - cumTime[l] + b[l];
-
-            // Adjust time for matches lit from both ends
-            for (int i = l; i < r; i++) {
-                if (b[i] % 2 == 0) {
-                    time -= (double)b[i]/2;
-                }
+            double leftSum = (l == 0) ? 0 : prefixSum[l - 1];
+            double rightSum = prefixSum[r];
+            double time = (rightSum - leftSum) / 2.0;
+            if (l != r) {
+                time += (double)b[l] / 2.0;
+                time += (double)b[r] / 2.0;
+            } else {
+                time += (double)b[l];
             }
             System.out.printf("%.1f\n", time);
         }
