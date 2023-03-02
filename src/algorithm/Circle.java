@@ -1,72 +1,70 @@
 package algorithm;
-import java.util.Scanner;
+
+import java.util.*;
+import java.awt.geom.*;
 
 public class Circle {
-
-    static class Point {
-        double x, y;
-
-        Point(double x, double y) {
-            this.x = x;
-            this.y = y;
-        }
-    }
+    static int N, M;
+    static Point2D[] points;
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        int m = sc.nextInt();
-        Point[] points = new Point[n];
-        for (int i = 0; i < n; i++) {
+        N = sc.nextInt();
+        M = sc.nextInt();
+        points = new Point2D[N];
+        for (int i = 0; i < N; i++) {
             double x = sc.nextDouble();
             double y = sc.nextDouble();
-            points[i] = new Point(x, y);
+            points[i] = new Point2D.Double(x, y);
         }
-        double minRadius = Double.MAX_VALUE;
-        for (int i = 0; i < n; i++) {
-            for (int j = i+1; j < n; j++) {
-                for (int k = j+1; k < n; k++) {
-                    Point p1 = points[i];
-                    Point p2 = points[j];
-                    Point p3 = points[k];
-                    double radius = getRadius(p1, p2, p3);
-                    int count = 3;
-                    for (int l = 0; l < n; l++) {
-                        if (l != i && l != j && l != k) {
-                            Point p = points[l];
-                            if (inCircle(p1, p2, p3, p)) {
-                                count++;
-                            }
-                        }
+        System.out.printf("%.2f", findSmallestCircle());
+        sc.close();
+    }
+
+    static double findSmallestCircle() {
+        List<Point2D> shuffled = Arrays.asList(points);
+        Collections.shuffle(shuffled, new Random());
+        Point2D[] c = new Point2D[]{shuffled.get(0)};
+        double r = 0;
+        for (int i = 1; i < N; i++) {
+            Point2D p = shuffled.get(i);
+            if (p.distance(c[0]) <= r) {
+                continue;
+            }
+            c = new Point2D[]{p};
+            r = 0;
+            for (int j = 0; j < i; j++) {
+                Point2D q = shuffled.get(j);
+                if (q.distance(c[0]) <= r) {
+                    continue;
+                }
+                c = new Point2D[]{new Point2D.Double((p.getX() + q.getX()) / 2, (p.getY() + q.getY()) / 2)};
+                r = c[0].distance(p);
+                for (int k = 0; k < j; k++) {
+                    Point2D r1 = shuffled.get(k);
+                    if (r1.distance(c[0]) <= r) {
+                        continue;
                     }
-                    if (count >= m && radius < minRadius) {
-                        minRadius = radius;
-                    }
+                    c = getCircumcenter(p, q, r1);
+                    r = c[0].distance(p);
                 }
             }
         }
-
-        System.out.printf("%.2f", minRadius);
+        return r;
     }
 
-    static double getRadius(Point p1, Point p2, Point p3) {
-        double a = dist(p1, p2);
-        double b = dist(p2, p3);
-        double c = dist(p3, p1);
-        double s = (a + b + c) / 2;
-        double area = Math.sqrt(s * (s-a) * (s-b) * (s-c));
-        return a*b*c / (4*area);
-    }
-
-    static double dist(Point p1, Point p2) {
-        double dx = p1.x - p2.x;
-        double dy = p1.y - p2.y;
-        return Math.sqrt(dx*dx + dy*dy);
-    }
-
-    static boolean inCircle(Point p1, Point p2, Point p3, Point p) {
-        double radius = getRadius(p1, p2, p3);
-        double dist = dist(p, new Point((p1.x+p2.x+p3.x)/3, (p1.y+p2.y+p3.y)/3));
-        return dist <= radius;
+    static Point2D[] getCircumcenter(Point2D p, Point2D q, Point2D r) {
+        double a = p.getX() - r.getX();
+        double b = p.getY() - r.getY();
+        double c = q.getX() - r.getX();
+        double d = q.getY() - r.getY();
+        double e = a * (p.getX() + r.getX()) + b * (p.getY() + r.getY());
+        double f = c * (q.getX() + r.getX()) + d * (q.getY() + r.getY());
+        double det = 2 * (a * d - b * c);
+        double x = (d * e - b * f) / det;
+        double y = (a * f - c * e) / det;
+        Point2D center = new Point2D.Double(x, y);
+        double radius = center.distance(p);
+        return new Point2D[]{center, new Point2D.Double(radius, 0)};
     }
 }

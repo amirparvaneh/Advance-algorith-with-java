@@ -3,52 +3,36 @@ package algorithm;
 import java.util.*;
 
 public class Salinpo {
-    static int[] visited;
-    static int[] colors;
-    static boolean[] cycle;
-    static int[] indegree;
-
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
+        Scanner scanner = new Scanner(System.in);
+        int n = scanner.nextInt();
         int[] a = new int[n];
-        visited = new int[n];
-        colors = new int[n];
-        cycle = new boolean[n];
-        indegree = new int[n];
-
         for (int i = 0; i < n; i++) {
-            a[i] = sc.nextInt();
-            if (a[i] > 0) {
-                a[i]--;
-                indegree[a[i]]++;
+            a[i] = scanner.nextInt();
+        }
+
+        int undecided = 0;
+        for (int i = 0; i < n; i++) {
+            if (a[i] == 0) {
+                undecided++;
             }
         }
 
-        int count = 0;
+        long validStates = 1;
         for (int i = 0; i < n; i++) {
-            if (indegree[i] == 0) {
-                if (dfs(i, a))
-                    count++;
+            if (a[i] == 0) {
+                long availableChoices = undecided - 1;
+                if (i == 0 || a[i-1] != i) {
+                    availableChoices--;
+                }
+                if (i == n-1 || a[i+1] != i+2) {
+                    availableChoices--;
+                }
+                validStates *= availableChoices;
+                undecided--;
             }
         }
 
-        System.out.println(count);
-    }
-
-    public static boolean dfs(int i, int[] a) {
-        visited[i] = 1;
-        int next = a[i];
-
-        if (visited[next] == 0) {
-            if (dfs(next, a))
-                return true;
-        } else if (visited[next] == 1) {
-            cycle[i] = true;
-            return true;
-        }
-
-        visited[i] = 2;
-        return false;
+        System.out.println(validStates);
     }
 }
