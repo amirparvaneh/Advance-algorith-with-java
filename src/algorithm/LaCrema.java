@@ -18,7 +18,11 @@ public class LaCrema {
             for (int i = l; i < r; i++) {
                 time += (double)b[i] / 2;
             }
-            time += (double)b[r] / 2;
+            if (l != r) {
+                time += (double)(b[l] + b[r]) / 4;
+            } else {
+                time += (double)b[l] / 2;
+            }
             System.out.printf("%.1f\n", time);
         }
         sc.close();
