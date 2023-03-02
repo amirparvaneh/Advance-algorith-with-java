@@ -3,50 +3,52 @@ package algorithm;
 import java.util.*;
 
 public class Salinpo {
-    static final int MOD = 1_000_000_007;
+    static int[] visited;
+    static int[] colors;
+    static boolean[] cycle;
+    static int[] indegree;
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int n = scanner.nextInt();
-        int[] a = new int[n + 1];
-        for (int i = 1; i <= n; i++) {
-            a[i] = scanner.nextInt();
-        }
-        int[] count = new int[n + 1];
-        for (int i = 1; i <= n; i++) {
-            if (a[i] != 0) {
-                count[a[i]]++;
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] a = new int[n];
+        visited = new int[n];
+        colors = new int[n];
+        cycle = new boolean[n];
+        indegree = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            a[i] = sc.nextInt();
+            if (a[i] > 0) {
+                a[i]--;
+                indegree[a[i]]++;
             }
         }
-        long ans = 1;
-        boolean[] vis = new boolean[n + 1];
-        for (int i = 1; i <= n; i++) {
-            if (!vis[i] && a[i] == 0) {
-                int cnt = 0;
-                int j = i;
-                while (!vis[j] && a[j] == 0) {
-                    vis[j] = true;
-                    cnt++;
-                    j = a[j] == 0 ? j + 1 : a[j];
-                }
-                if (a[j] != 0) {
-                    count[a[j]] -= cnt;
-                    if (count[a[j]] < 0) {
-                        System.out.println(0);
-                        return;
-                    }
-                }
-                ans = (ans * countWays(cnt)) % MOD;
+
+        int count = 0;
+        for (int i = 0; i < n; i++) {
+            if (indegree[i] == 0) {
+                if (dfs(i, a))
+                    count++;
             }
         }
-        System.out.println(ans);
+
+        System.out.println(count);
     }
 
-    static long countWays(int n) {
-        long ans = 1;
-        for (int i = 2; i <= n; i++) {
-            ans = (ans * i) % MOD;
+    public static boolean dfs(int i, int[] a) {
+        visited[i] = 1;
+        int next = a[i];
+
+        if (visited[next] == 0) {
+            if (dfs(next, a))
+                return true;
+        } else if (visited[next] == 1) {
+            cycle[i] = true;
+            return true;
         }
-        return ans;
+
+        visited[i] = 2;
+        return false;
     }
 }
