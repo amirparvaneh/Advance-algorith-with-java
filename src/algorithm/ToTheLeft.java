@@ -12,7 +12,7 @@ public class ToTheLeft {
         int cx = sc.nextInt();
         int cy = sc.nextInt();
 
-        // check if it is possible to reach C without round action
+
         boolean canReach = false;
         if (ax == cx || ay == cy) {
             if ((ax <= bx && bx <= cx) || (cx <= bx && bx <= ax)) {
@@ -22,7 +22,7 @@ public class ToTheLeft {
             }
         }
 
-        // check if it is possible to reach C with round action
+
         boolean canRound = false;
         if (!canReach) {
             if ((ax < cx && ay < cy) || (cx < ax && cy < ay)) {
