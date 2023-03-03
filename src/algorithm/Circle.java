@@ -17,7 +17,7 @@ public class Circle {
             double y = sc.nextDouble();
             points[i] = new Point2D.Double(x, y);
         }
-        System.out.printf("%.5f", smallestCircle());
+        System.out.printf("%.2f", smallestCircle());
         sc.close();
     }
 
