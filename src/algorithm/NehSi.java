@@ -4,30 +4,42 @@ import java.util.*;
 
 public class NehSi {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int n = scanner.nextInt();
+        Scanner sc = new Scanner(System.in);
+
+        int n = sc.nextInt();
         int[] v = new int[n];
+
         for (int i = 0; i < n; i++) {
-            v[i] = scanner.nextInt();
+            v[i] = sc.nextInt();
         }
-        int jumps = 0;
-        int current = 0;
-        int next = 0;
-        while (current < n-1) {
-            jumps++;
-            int maxV = v[current];
-            for (int i = current+1; i < n && i <= current + maxV; i++) {
-                if (v[i] > v[next]) {
-                    next = i;
+
+        int ans = -1;
+
+        for (int i = 0; i < n - 1; i++) {
+            int min = v[i];
+            int max = v[i + 1];
+            boolean valid = true;
+
+            for (int j = i + 1; j < n - 1; j++) {
+                if (v[j] < min) {
+                    min = v[j];
+                }
+
+                if (v[j + 1] > max) {
+                    max = v[j + 1];
+                }
+
+                if (min + max == j - i + 2) {
+                    ans = -1;
+                    break;
                 }
             }
-            if (next == current) {
-                System.out.println("-1");
-                return;
+
+            if (ans == -1) {
+                break;
             }
-            current = next;
-            next = current;
         }
-        System.out.println(jumps);
+
+        System.out.println(ans);
     }
 }

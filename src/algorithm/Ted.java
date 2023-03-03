@@ -3,43 +3,35 @@ package algorithm;
 import java.util.Scanner;
 
 public class Ted {
+
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        int[] a = new int[n];
+        Scanner input = new Scanner(System.in);
+        int n = input.nextInt(); // number of people
+        int[] tickets = new int[n]; // array to store ticket numbers
+
         for (int i = 0; i < n; i++) {
-            a[i] = sc.nextInt();
+            tickets[i] = input.nextInt(); // read ticket number for person i
         }
-        int[] seats = new int[n];
+
+        int[] seats = new int[n]; // array to store seat numbers
+        boolean[] taken = new boolean[n + 1]; // boolean array to keep track of taken seats
         for (int i = 0; i < n; i++) {
-            int x = a[i];
-            if (seats[x - 1] == 0) {
-                seats[x - 1] = i + 1;
+            int ticket = tickets[i];
+            if (!taken[ticket]) {
+                seats[i] = ticket;
+                taken[ticket] = true;
             } else {
-                int j = x;
-                while (j <= n && seats[j - 1] != 0) {
-                    j++;
-                }
-                if (j <= n && seats[j - 1] == 0) {
-                    seats[j - 1] = i + 1;
-                } else {
-                    j = 1;
-                    while (j < x && seats[j - 1] != 0) {
-                        j++;
-                    }
-                    if (j < x && seats[j - 1] == 0) {
-                        seats[j - 1] = i + 1;
-                    } else {
-                        for (int k = 0; k < n; k++) {
-                            if (seats[k] == 0) {
-                                seats[k] = i + 1;
-                                break;
-                            }
-                        }
+                for (int j = ticket + 1; j <= n; j++) {
+                    if (!taken[j]) {
+                        seats[i] = j;
+                        taken[j] = true;
+                        break;
                     }
                 }
             }
         }
+
+        // print seat numbers
         for (int i = 0; i < n; i++) {
             System.out.print(seats[i] + " ");
         }

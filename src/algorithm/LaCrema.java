@@ -1,6 +1,7 @@
 package algorithm;
 
-import java.util.*;
+import java.util.Scanner;
+
 public class LaCrema {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -10,34 +11,21 @@ public class LaCrema {
             b[i] = sc.nextInt();
         }
         int q = sc.nextInt();
-        for (int i = 0; i < q; i++) {
+        while (q-- > 0) {
             int l = sc.nextInt();
             int r = sc.nextInt();
-            double time = 0.0;
-            for (int j = l; j < r; j++) {
-                if (b[j] < b[j + 1]) {
-                    time += b[j] * (j - l + 1);
-                } else {
-                    time += (double) b[j] / 2 * (j - l + 1);
-                    int k = j + 1;
-                    while (k <= r && b[k] >= b[j]) {
-                        k++;
-                    }
-                    if (k <= r && b[k] < b[j]) {
-                        time += (double) (k - j - 1) / 2 * (j - l + 1);
-                        j = k - 1;
-                    } else {
-                        if (j == r - 1 && b[j + 1] < b[j]) {
-                            time += (double) (r - j - 1) / 2 * (j - l + 1);
-                            j = r - 1;
-                        } else {
-                            time += (double) (r - j) / 2 * (j - l + 1);
-                            break;
-                        }
-                    }
+            double ans = 0.0;
+            if (r - l == 1) {
+                ans = 1.0 * (b[l] * b[r]) / (b[l] + b[r]);
+            } else {
+                for (int i = l; i < r; i++) {
+                    ans += 1.0 / b[i];
                 }
+                ans += 0.5 / b[r-1];
+                ans = 1.0 / ans;
             }
-            System.out.printf("%.1f\n", time);
+            System.out.printf("%.1f\n", ans);
         }
+        sc.close();
     }
 }
