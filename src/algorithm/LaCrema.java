@@ -11,21 +11,24 @@ public class LaCrema {
             b[i] = sc.nextInt();
         }
         int q = sc.nextInt();
-        while (q-- > 0) {
-            int l = sc.nextInt();
-            int r = sc.nextInt();
-            double ans = 0.0;
-            if (r - l == 1) {
-                ans = 1.0 * (b[l] * b[r]) / (b[l] + b[r]);
-            } else {
-                for (int i = l; i < r; i++) {
-                    ans += 1.0 / b[i];
+        for (int i = 0; i < q; i++) {
+            int l = sc.nextInt() - 1;
+            int r = sc.nextInt() - 1;
+            double sum = 0;
+            for (int j = l; j < r; j++) {
+                if (b[j] < b[j + 1]) {
+                    sum += 0.5 * b[j];
+                    for (int k = j + 1; k <= r && b[k] >= b[j]; k++) {
+                        sum += 0.5 * b[j];
+                    }
+                } else {
+                    sum += 0.5 * b[j + 1];
+                    for (int k = j; k >= l && b[k] >= b[j + 1]; k--) {
+                        sum += 0.5 * b[j + 1];
+                    }
                 }
-                ans += 0.5 / b[r-1];
-                ans = 1.0 / ans;
             }
-            System.out.printf("%.1f\n", ans);
+            System.out.printf("%.1f\n", sum);
         }
-        sc.close();
     }
 }

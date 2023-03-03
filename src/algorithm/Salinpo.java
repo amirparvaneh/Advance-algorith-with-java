@@ -4,35 +4,49 @@ import java.util.*;
 
 public class Salinpo {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int n = scanner.nextInt();
-        int[] a = new int[n];
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] arr = new int[n];
         for (int i = 0; i < n; i++) {
-            a[i] = scanner.nextInt();
+            arr[i] = sc.nextInt();
         }
-
-        int undecided = 0;
+        int count = 0;
         for (int i = 0; i < n; i++) {
-            if (a[i] == 0) {
-                undecided++;
+            if (arr[i] == 0) {
+                int taken = 0;
+                for (int j = 0; j < n; j++) {
+                    if (arr[j] == i+1 || arr[j] == arr[i]) {
+                        taken++;
+                    }
+                }
+                if (taken == 0) {
+                    arr[i] = i+1;
+                    count += solve(arr, i+1);
+                    arr[i] = 0;
+                }
             }
         }
+        System.out.println(count);
+    }
 
-        long validStates = 1;
-        for (int i = 0; i < n; i++) {
-            if (a[i] == 0) {
-                long availableChoices = undecided - 1;
-                if (i == 0 || a[i-1] != i) {
-                    availableChoices--;
+    public static int solve(int[] arr, int idx) {
+        int count = 0;
+        if (idx == arr.length) {
+            count++;
+        } else {
+            if (arr[idx] == 0) {
+                for (int i = 0; i < arr.length; i++) {
+                    if (arr[i] == idx+1 || arr[i] == arr[idx]) {
+                        continue;
+                    }
+                    arr[idx] = i+1;
+                    count += solve(arr, idx+1);
+                    arr[idx] = 0;
                 }
-                if (i == n-1 || a[i+1] != i+2) {
-                    availableChoices--;
-                }
-                validStates *= availableChoices;
-                undecided--;
+            } else {
+                count += solve(arr, idx+1);
             }
         }
-
-        System.out.println(validStates);
+        return count;
     }
 }
