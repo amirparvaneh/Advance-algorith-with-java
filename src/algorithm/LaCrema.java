@@ -1,9 +1,7 @@
 package algorithm;
 
 import java.util.*;
-
 public class LaCrema {
-
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         int n = sc.nextInt();
@@ -11,25 +9,35 @@ public class LaCrema {
         for (int i = 0; i < n; i++) {
             b[i] = sc.nextInt();
         }
-
-        double[] dp = new double[n];
-        dp[0] = b[0];
-        for (int i = 1; i < n; i++) {
-            dp[i] = dp[i-1] + b[i];
-        }
-        for (int i = 1; i < n; i++) {
-            dp[i] = Math.min(dp[i], dp[i-1] + b[i]/2.0);
-        }
-        for (int i = n-2; i >= 0; i--) {
-            dp[i] = Math.min(dp[i], dp[i+1] + b[i]/2.0);
-        }
-
         int q = sc.nextInt();
         for (int i = 0; i < q; i++) {
             int l = sc.nextInt();
             int r = sc.nextInt();
-            double time = dp[r] - dp[l] + b[l]/2.0;
-            System.out.printf("%.1f%n", time);
+            double time = 0.0;
+            for (int j = l; j < r; j++) {
+                if (b[j] < b[j + 1]) {
+                    time += b[j] * (j - l + 1);
+                } else {
+                    time += (double) b[j] / 2 * (j - l + 1);
+                    int k = j + 1;
+                    while (k <= r && b[k] >= b[j]) {
+                        k++;
+                    }
+                    if (k <= r && b[k] < b[j]) {
+                        time += (double) (k - j - 1) / 2 * (j - l + 1);
+                        j = k - 1;
+                    } else {
+                        if (j == r - 1 && b[j + 1] < b[j]) {
+                            time += (double) (r - j - 1) / 2 * (j - l + 1);
+                            j = r - 1;
+                        } else {
+                            time += (double) (r - j) / 2 * (j - l + 1);
+                            break;
+                        }
+                    }
+                }
+            }
+            System.out.printf("%.1f\n", time);
         }
     }
 }
